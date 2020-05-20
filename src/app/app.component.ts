@@ -13,7 +13,7 @@ export class AppComponent {
   public image: any;
 
   private url: string = 'https://vision.googleapis.com/v1/images:annotate?key=' +
-    'AIzaSyC4o30DMu1pnWjoJPMr0jqyzXQrM3U8DmU' //Your API Key
+    'Your API Key';
 
   
   constructor(private http: HttpClient) {
