@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -8,41 +8,77 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AppComponent {
 
-  selectedFile: File = null;
   @Output() event = new EventEmitter();
+
   public image: any;
 
   private url: string = 'https://vision.googleapis.com/v1/images:annotate?key=' +
-    'AIzaSyBGsWzGU2G9sxIRRRAalNajUSBSyASBCQM' //Your API Key
+    'AIzaSyC4o30DMu1pnWjoJPMr0jqyzXQrM3U8DmU' //Your API Key
+
   
   constructor(private http: HttpClient) {
   }
 
-  /**
-   *  Validate uploader params
-   * @param event
-   */
-  public async onFileSelected(event) {
-    this.selectedFile = <File>event.target.files[0];
-    if (this.selectedFile) {
-       const fd = new FormData();
-      fd.append('image', this.selectedFile, this.selectedFile.name);
-      return this.upload(fd);
-      
+
+  public onFileSelected(event) {
+
+    const selectedFile: File = <File>event.target.files[0];
+
+    if (selectedFile) {
+
+      // 画像を開いてプレビューする
+      var reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onload = (_event) => {
+        this.image = reader.result;
+
+        // Google Cloud Vision API に送る
+        return this.upload();
+      }
     }
   }
 
-  /**
-   * Upload image to server and receive image object
-   */
-  private upload(fd: FormData) {
 
-    this.http.post(this.url, fd).subscribe((res: any) => {
-      this.image = res.data;
+  private upload() {
+
+    // 画像データの先頭 "data:image/png;base64" の部分が余計なので削除する
+    const content = this.image.replace(/^data:image\/[a-z]+;base64,/, "");
+
+    // Google Cloud Vision API に送るデータを用意
+    const obj = {
+      "requests": [
+        {
+          "image": { "content": content },
+          "features": [
+            {
+              "type": "TEXT_DETECTION",
+              "maxResults": "10"
+            }
+          ]
+        }
+      ]
+    };
+    const body = JSON.stringify(obj);
+
+    // Google Cloud Vision API にポストする
+    this.http.post(this.url, body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    }).subscribe((res: any) => {
       this.event.emit(this.image);
+      // Google Cloud Vision API からのレスポンスを表示する
+      alert("成功！！ console.log に画像認識 した結果を出力しました。");
+      console.log(res);
     }, (err: any) => {
-      // Show error message or make something.
+      // エラー
+        alert("エラー console.log を確認してください。");
+      console.log(err);
     });
+
+
+
+
   }
 
 }

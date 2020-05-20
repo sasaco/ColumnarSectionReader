@@ -1,7 +1,11 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css"
   integrity="sha384-3AB7yXWz4OeoZcPbieVW64vVXEwADiYyAEhwilzWsLw+9FgqpyjjStpPnpBO8o8S" crossorigin="anonymous">
 
+<h3>Image Preview before Upload:</h3>
+
 <label class="uploader-circle">
   <i class="fas fa-plus"></i>
   <input type="file" (change)="onFileSelected($event)" accept="image/*" id="uploader" />
 </label>
+
+<img [src]="image" height="200" *ngIf="image">
