@@ -8,4 +8,9 @@
   <input type="file" (change)="onFileSelected($event)" accept="image/*" id="uploader" />
 </label>
 
-<img [src]="image" height="200" *ngIf="image">
+<div>
+  <canvas #myCanvas [width]="canvasWidth" [height]="canvasHeight"></canvas>
+</div>
+
+
+<!-- <img [src]="image" height="100%" *ngIf="image"> -->
