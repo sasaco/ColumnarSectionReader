@@ -17,7 +17,7 @@ export class AppComponent implements AfterViewInit {
   private img: any;
 
   private url: string = 'https://vision.googleapis.com/v1/images:annotate?key=' +
-    'AIzaSyC4o30DMu1pnWjoJPMr0jqyzXQrM3U8DmU'; //Your API Key
+    'Your API Key';
 
 
   constructor(private http: HttpClient) {
@@ -109,7 +109,7 @@ export class AppComponent implements AfterViewInit {
     const responses = res.responses[0];
     const textAnnotations = responses.textAnnotations;
     for (let i = 1; i < textAnnotations.length; i++) {
-      
+
       const block = textAnnotations[i];
       const text: string = block.description;
       const pos: Array<any> = block.boundingPoly['vertices'];
